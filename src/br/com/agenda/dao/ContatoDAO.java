@@ -54,6 +54,86 @@ public class ContatoDAO {
 		}
 	}
 
+	public void update(Contato contato) {
+		
+		String sql = "UPDATE contatos SET nome = ?, idade = ?, dataCadastro = ? WHERE id = ?";
+		
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		
+		try {
+			//Criar conexão com o banco
+			conn = ConnectionFactory.createConnectionToMySQL();
+			
+			//Criar classe para executar a query
+			pstm = conn.prepareStatement(sql);
+			
+			//Adicionar os valores para atualizar
+			pstm.setString(1, contato.getNome());
+			pstm.setInt(2, contato.getIdade());
+			pstm.setDate(3, new java.sql.Date(contato.getDataCadastro().getTime()));
+			
+			//Qual o ID do registro que deseja atualizar?
+			pstm.setInt(4, contato.getId());
+			
+			//Executar a query
+			pstm.execute();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try {
+				if(pstm != null) {
+					pstm.close();
+				}				
+				if(conn != null) {
+					conn.close();
+				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void deleteByID(int id) {
+		
+		String sql = "DELETE FROM contatos WHERE id = ?";
+		
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		
+		try {
+			conn = ConnectionFactory.createConnectionToMySQL();
+			
+			pstm = conn.prepareStatement(sql);
+			
+			pstm.setInt(1, id);
+			
+			pstm.execute();
+			
+			//System.out.println("Removido com Sucesso!!");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try {
+				if(pstm != null) {
+					pstm.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public List<Contato> getContatos(){
 		String sql = "SELECT * FROM contatos";
 		
